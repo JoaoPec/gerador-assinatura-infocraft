@@ -145,6 +145,11 @@
       };
     }
 
+    function nameLineWidth(firstName) {
+      var length = String(firstName || "").length;
+      return Math.max(48, Math.min(150, Math.round(length * 7.5)));
+    }
+
     function initials(fullName) {
       var parts = String(fullName || "").trim().split(/\s+/);
       var first = parts[0] ? parts[0].charAt(0) : "I";
@@ -286,18 +291,19 @@
       };
       var nameParts = splitName(data.name);
       var telHref = whatsappHref(data.phone);
+      var lineWidth = nameLineWidth(nameParts.first);
 
       return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; font-family:Arial, Helvetica, sans-serif; color:#000078; background-color:#ffffff;">' +
         '<tr><td width="800" height="290" valign="top" style="width:800px; height:290px; padding:0; margin:0;">' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; border-collapse:collapse;"><tr>' +
         '<td width="36" style="width:36px; font-size:0; line-height:0;">&nbsp;</td>' +
         '<td width="252" valign="middle" style="width:252px; padding-top:50px;"><img src="' + assets.logo + '" width="240" alt="Infocraft - Consultoria, Tecnologia e Inovacao" border="0" style="display:block; width:240px; height:auto; border:0; outline:none; text-decoration:none;"></td>' +
-        '<td width="35" valign="middle" style="width:35px; padding-top:50px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr><tr><td height="110" style="height:110px; border-left:1px solid #9ca4c7; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr></table></td>' +
-        '<td width="130" valign="top" align="center" style="width:130px; padding-top:58px;">' + photoHtml(data) + '<img src="' + assets.connector + '" width="72" height="28" alt="" border="0" style="display:block; width:72px; height:28px; border:0; outline:none; text-decoration:none;">' + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" style="width:72px; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml() + '</td></tr></table></td>' +
+        '<td width="35" valign="middle" style="width:35px; padding-top:50px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr><tr><td height="110" style="height:110px; border-left:1px solid #9ca4c7; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td height="10" style="height:10px; padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td width="10" valign="middle" style="width:10px; font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:14px; line-height:10px;">&#9679;</td><td width="25" valign="middle" style="width:25px; height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr></table></td></tr></table></td>' +
+        '<td width="130" valign="top" align="center" style="width:130px; padding-top:58px;">' + photoHtml(data) + '<img src="' + assets.connector + '" width="72" height="16" alt="" border="0" style="display:block; width:72px; height:16px; border:0; outline:none; text-decoration:none;">' + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" style="width:72px; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml() + '</td></tr></table></td>' +
         '<td width="47" style="width:47px; font-size:0; line-height:0;">&nbsp;</td>' +
         '<td width="260" valign="top" style="width:260px; padding-top:55px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
         '<tr><td style="font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:27px; line-height:31px; font-weight:bold; padding:0;">' + escapeHtml(nameParts.first) + ' <span style="font-weight:normal;">' + escapeHtml(nameParts.rest) + '</span></td></tr>' +
-        '<tr><td height="3" style="height:3px; font-size:0; line-height:0; background-color:#000078;">&nbsp;</td></tr>' +
+        '<tr><td height="3" style="height:3px; font-size:0; line-height:0; padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="' + lineWidth + '" style="width:' + lineWidth + 'px; border-collapse:collapse;"><tr><td height="3" bgcolor="#000078" style="height:3px; font-size:0; line-height:0; background-color:#000078;">&nbsp;</td></tr></table></td></tr>' +
         '<tr><td style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:17px; line-height:22px; padding-top:6px;">' + escapeHtml(data.role) + '</td></tr>' +
         '<tr><td height="14" style="height:14px; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td>' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
@@ -384,6 +390,7 @@
             phone: fields.phone.value
           };
           var nameParts = splitName(data.name);
+          var lineWidth = nameLineWidth(nameParts.first);
           var canvas = document.createElement("canvas");
           var ctx = canvas.getContext("2d");
           canvas.width = 800;
@@ -411,15 +418,15 @@
           ctx.fill();
 
           ctx.drawImage(images[1], 353, 58, 106, 106);
-          ctx.drawImage(images[5], 370, 164, 72, 28);
-          ctx.drawImage(images[2], 370, 192, 72, 72);
+          ctx.drawImage(images[5], 370, 164, 72, 16);
+          ctx.drawImage(images[2], 370, 180, 72, 72);
 
           var nameX = 510;
           drawText(ctx, nameParts.first + " ", nameX, 58, { font: "bold 27px Arial", color: "#000078" });
           var firstWidth = ctx.measureText(nameParts.first + " ").width;
           drawText(ctx, nameParts.rest, nameX + firstWidth, 58, { font: "27px Arial", color: "#000078" });
           ctx.fillStyle = "#000078";
-          ctx.fillRect(510, 90, 150, 3);
+          ctx.fillRect(510, 90, lineWidth, 3);
           drawText(ctx, data.role, 510, 101, { font: "17px Arial", color: "#0b226f" });
 
           drawText(ctx, "✉", 510, 139, { font: "23px Arial", color: "#000078" });
