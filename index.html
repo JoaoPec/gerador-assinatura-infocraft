@@ -86,7 +86,7 @@
       linkedin: "assets/social-linkedin.png",
       instagram: "assets/social-instagram.png"
     };
-    var assets = window.INLINE_SIGNATURE_ASSETS || fallbackAssets;
+    var assets = Object.assign({}, fallbackAssets, window.INLINE_SIGNATURE_ASSETS || {});
 
     var uploadedPhotoDataUrl = "";
     var avatarDataUrl = "";
@@ -293,7 +293,7 @@
         '<td width="36" style="width:36px; font-size:0; line-height:0;">&nbsp;</td>' +
         '<td width="252" valign="middle" style="width:252px; padding-top:50px;"><img src="' + assets.logo + '" width="240" alt="Infocraft - Consultoria, Tecnologia e Inovacao" border="0" style="display:block; width:240px; height:auto; border:0; outline:none; text-decoration:none;"></td>' +
         '<td width="35" valign="middle" style="width:35px; padding-top:50px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr><tr><td height="110" style="height:110px; border-left:1px solid #9ca4c7; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr></table></td>' +
-        '<td width="130" valign="top" align="center" style="width:130px; padding-top:58px;">' + photoHtml(data) + '<img src="' + assets.connector + '" width="72" height="22" alt="" border="0" style="display:block; width:72px; height:22px; border:0; outline:none; text-decoration:none;">' + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" style="width:72px; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml() + '</td></tr></table></td>' +
+        '<td width="130" valign="top" align="center" style="width:130px; padding-top:58px;">' + photoHtml(data) + '<img src="' + assets.connector + '" width="72" height="28" alt="" border="0" style="display:block; width:72px; height:28px; border:0; outline:none; text-decoration:none;">' + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" style="width:72px; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml() + '</td></tr></table></td>' +
         '<td width="47" style="width:47px; font-size:0; line-height:0;">&nbsp;</td>' +
         '<td width="260" valign="top" style="width:260px; padding-top:55px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
         '<tr><td style="font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:27px; line-height:31px; font-weight:bold; padding:0;">' + escapeHtml(nameParts.first) + ' <span style="font-weight:normal;">' + escapeHtml(nameParts.rest) + '</span></td></tr>' +
@@ -309,9 +309,9 @@
         '<tr><td width="800" height="110" valign="top" style="width:800px; height:110px; padding:0; margin:0;">' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; height:110px; border-collapse:collapse;"><tr>' +
         '<td width="430" height="110" valign="middle" bgcolor="#000078" style="width:430px; height:110px; background-color:#000078;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="430" style="width:430px; border-collapse:collapse;"><tr>' +
-        '<td width="24" style="width:24px; font-size:0; line-height:0;">&nbsp;</td><td width="58" align="center" valign="middle" style="width:58px; border:2px solid #40a7ff;"><img src="' + assets.computer + '" width="58" height="58" alt="Solucoes digitais" border="0" style="display:block; width:58px; height:58px; border:0; outline:none; text-decoration:none;"></td>' +
+        '<td width="24" style="width:24px; font-size:0; line-height:0;">&nbsp;</td><td width="58" align="center" valign="middle" style="width:58px; border:2px solid #40a7ff;"><img src="' + assets.computer + '" width="58" height="58" alt="Soluções digitais" border="0" style="display:block; width:58px; height:58px; border:0; outline:none; text-decoration:none;"></td>' +
         '<td width="16" style="width:16px; font-size:0; line-height:0;">&nbsp;</td><td width="206" valign="middle" style="width:206px; font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:17px; line-height:18px; letter-spacing:0;">Soluções completas para<br>municípios e educação.</td>' +
-        '<td width="96" align="center" valign="middle" style="width:96px;"><img src="' + assets.certification + '" width="92" height="92" alt="Certificação MPS BR" border="0" style="display:block; width:92px; height:92px; border:0; outline:none; text-decoration:none;"></td><td width="30" style="width:30px; font-size:0; line-height:0;">&nbsp;</td>' +
+        '<td width="96" align="center" valign="middle" style="width:96px;"><img src="' + assets.certification + '" width="82" height="104" alt="Certificação MPS BR" border="0" style="display:block; width:82px; height:104px; border:0; outline:none; text-decoration:none;"></td><td width="30" style="width:30px; font-size:0; line-height:0;">&nbsp;</td>' +
         '</tr></table></td>' +
         '<td width="370" height="110" valign="middle" bgcolor="#eef2ff" style="width:370px; height:110px; background-color:#eef2ff;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="370" style="width:370px; border-collapse:collapse;"><tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:18px; line-height:22px; font-style:italic; padding-bottom:10px;">Nos siga nas redes sociais</td></tr><tr><td align="center"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse:collapse;"><tr><td align="center" width="58" style="width:58px;"><a href="https://www.facebook.com/people/Infocraft-Solu%C3%A7%C3%B5es-Tecnol%C3%B3gicas/100063745890630/#" style="color:#000078; text-decoration:none;"><img src="' + assets.facebook + '" width="44" height="44" alt="Facebook Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td><td align="center" width="58" style="width:58px;"><a href="https://www.linkedin.com/company/infocraft-online/posts/?feedView=all" style="color:#000078; text-decoration:none;"><img src="' + assets.linkedin + '" width="44" height="44" alt="LinkedIn Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td><td align="center" width="58" style="width:58px;"><a href="https://www.instagram.com/infocrafttecnologia/" style="color:#000078; text-decoration:none;"><img src="' + assets.instagram + '" width="44" height="44" alt="Instagram Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td></tr></table></td></tr></table></td>' +
         '</tr></table></td></tr></table>';
@@ -411,8 +411,8 @@
           ctx.fill();
 
           ctx.drawImage(images[1], 353, 58, 106, 106);
-          ctx.drawImage(images[5], 370, 164, 72, 22);
-          ctx.drawImage(images[2], 370, 186, 72, 72);
+          ctx.drawImage(images[5], 370, 164, 72, 28);
+          ctx.drawImage(images[2], 370, 192, 72, 72);
 
           var nameX = 510;
           drawText(ctx, nameParts.first + " ", nameX, 58, { font: "bold 27px Arial", color: "#000078" });
@@ -440,7 +440,7 @@
           ctx.drawImage(images[3], 24, 316, 58, 58);
           drawText(ctx, "Soluções completas para", 98, 331, { font: "17px Arial", color: "#ffffff" });
           drawText(ctx, "municípios e educação.", 98, 349, { font: "17px Arial", color: "#ffffff" });
-          ctx.drawImage(images[4], 316, 299, 92, 92);
+          ctx.drawImage(images[4], 323, 293, 82, 104);
 
           drawText(ctx, "Nos siga nas redes sociais", 615, 314, { font: "italic 18px Arial", color: "#000078", align: "center" });
           ctx.drawImage(images[7], 522, 344, 44, 44);
