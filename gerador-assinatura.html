@@ -115,6 +115,19 @@
       return String(value || "").replace(/\D/g, "");
     }
 
+    function whatsappHref(value) {
+      var digits = onlyDigits(value);
+      if (!digits) {
+        return "#";
+      }
+
+      if (digits.indexOf("55") !== 0) {
+        digits = "55" + digits;
+      }
+
+      return "https://wa.me/" + digits;
+    }
+
     function splitName(fullName) {
       var parts = String(fullName || "").trim().split(/\s+/);
       if (parts.length <= 1) {
@@ -270,8 +283,7 @@
         phone: fields.phone.value
       };
       var nameParts = splitName(data.name);
-      var tel = onlyDigits(data.phone);
-      var telHref = tel ? "tel:+55" + tel : "#";
+      var telHref = whatsappHref(data.phone);
 
       return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; font-family:Arial, Helvetica, sans-serif; color:#000078; background-color:#ffffff;">' +
         '<tr><td width="800" height="290" valign="top" style="width:800px; height:290px; padding:0; margin:0;">' +
