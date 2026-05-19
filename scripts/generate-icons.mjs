@@ -1,10 +1,13 @@
 import { createCanvas } from "canvas";
+import sharp from "sharp";
 import { writeFileSync, mkdirSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 const BLUE = "#000078";
 const WHITE = "#ffffff";
+const FA_PHONE_PATH =
+  "M160.2 25C152.3 6.1 131.7-3.9 112.1 1.4l-5.5 1.5c-64.6 17.6-119.8 80.2-103.7 156.4 37.1 175 174.8 312.7 349.8 349.8 76.3 16.2 138.8-39.1 156.4-103.7l1.5-5.5c5.4-19.7-4.7-40.3-23.5-48.1l-97.3-40.5c-16.5-6.9-35.6-2.1-47 11.8l-38.6 47.2C233.9 335.4 177.3 277 144.8 205.3L189 169.3c13.9-11.3 18.6-30.4 11.8-47L160.2 25z";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const assetsDir = join(root, "assets");
 
@@ -49,15 +52,6 @@ function drawContactIcon(draw) {
   return canvas;
 }
 
-function drawContactIconBadge(draw) {
-  const size = 24;
-  const canvas = createCanvas(size, size);
-  const ctx = canvas.getContext("2d");
-  drawBlueCircle(ctx, size);
-  draw(ctx, size);
-  return canvas;
-}
-
 function drawSocialIcon(draw) {
   const size = 44;
   const canvas = createCanvas(size, size);
@@ -84,35 +78,17 @@ save(
   })
 );
 
-save(
-  "icon-phone.png",
-  drawContactIconBadge((ctx) => {
-    ctx.strokeStyle = WHITE;
-    ctx.fillStyle = WHITE;
-    ctx.lineWidth = 1.5;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+async function saveFontAwesomePhoneIcon() {
+  const svg =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24">' +
+    '<path fill="' +
+    BLUE +
+    '" d="' +
+    FA_PHONE_PATH +
+    '"/></svg>';
 
-    roundRect(ctx, 4.5, 6, 10.5, 12, 1.8);
-    ctx.stroke();
-
-    roundRect(ctx, 15, 4.5, 4.5, 14.5, 1.2);
-    ctx.stroke();
-
-    roundRect(ctx, 6, 8.5, 5.5, 2.8, 0.6);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(7.2, 14.5, 0.45, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(9.5, 14.5, 0.45, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(11.8, 14.5, 0.45, 0, Math.PI * 2);
-    ctx.fill();
-  })
-);
+  await sharp(Buffer.from(svg)).resize(24, 24).png().toFile(join(assetsDir, "icon-phone.png"));
+}
 
 save(
   "website-globe.png",
@@ -186,4 +162,12 @@ save(
   })
 );
 
-console.log("Icons: bola azul + simbolo branco");
+async function main() {
+  await saveFontAwesomePhoneIcon();
+  console.log("Icons gerados (telefone: Font Awesome phone, azul sem fundo)");
+}
+
+main().catch(function (error) {
+  console.error(error);
+  process.exit(1);
+});
