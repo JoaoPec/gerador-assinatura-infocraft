@@ -286,6 +286,10 @@
       return '<img src="' + qrDataUrl + '" width="72" height="72" alt="QR code" border="0" style="display:block; width:72px; height:72px; border:0; outline:none; text-decoration:none;">';
     }
 
+    function lateralConnectorHtml() {
+      return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr><tr><td height="110" style="height:110px; border-left:1px solid #9ca4c7; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td height="10" style="height:10px; padding:0; font-size:0; line-height:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td width="10" valign="middle" align="left" style="width:10px; font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:14px; line-height:10px;">&#9679;</td><td width="25" valign="bottom" style="width:25px; height:10px; border-bottom:1px solid #9ca4c7; font-size:0; line-height:0;">&nbsp;</td></tr></table></td></tr></table>';
+    }
+
     function buildSignatureHtml() {
       var data = {
         name: fields.name.value,
@@ -302,7 +306,7 @@
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; border-collapse:collapse;"><tr>' +
         '<td width="36" style="width:36px; font-size:0; line-height:0;">&nbsp;</td>' +
         '<td width="252" valign="middle" style="width:252px; padding-top:50px;"><img src="' + assets.logo + '" width="240" alt="Infocraft - Consultoria, Tecnologia e Inovacao" border="0" style="display:block; width:240px; height:auto; border:0; outline:none; text-decoration:none;"></td>' +
-        '<td width="35" valign="middle" style="width:35px; padding-top:50px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr><tr><td height="110" style="height:110px; border-left:1px solid #9ca4c7; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr></table></td>' +
+        '<td width="35" valign="middle" style="width:35px; padding-top:50px;">' + lateralConnectorHtml() + '</td>' +
         '<td width="130" valign="top" align="center" style="width:130px; padding-top:58px;">' + photoHtml(data) + '<img src="' + assets.connector + '" width="72" height="18" alt="" border="0" style="display:block; width:72px; height:18px; border:0; outline:none; text-decoration:none;">' + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" style="width:72px; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml() + '</td></tr></table></td>' +
         '<td width="47" style="width:47px; font-size:0; line-height:0;">&nbsp;</td>' +
         '<td width="260" valign="top" style="width:260px; padding-top:55px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
@@ -405,20 +409,21 @@
 
           ctx.drawImage(images[0], 38, 80, 240, 97);
 
+          var lateralX = 322;
           ctx.strokeStyle = "#9ca4c7";
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.moveTo(322, 51);
+          ctx.moveTo(lateralX, 51);
           ctx.lineTo(369, 51);
-          ctx.moveTo(322, 51);
-          ctx.lineTo(322, 194);
-          ctx.moveTo(273, 194);
-          ctx.lineTo(322, 194);
+          ctx.moveTo(lateralX, 51);
+          ctx.lineTo(lateralX, 194);
+          ctx.moveTo(lateralX, 194);
+          ctx.lineTo(369, 194);
           ctx.stroke();
 
           ctx.fillStyle = "#000078";
           ctx.beginPath();
-          ctx.arc(271, 194, 4, 0, Math.PI * 2);
+          ctx.arc(lateralX, 194, 4, 0, Math.PI * 2);
           ctx.fill();
 
           ctx.drawImage(images[1], 353, 58, 106, 106);
