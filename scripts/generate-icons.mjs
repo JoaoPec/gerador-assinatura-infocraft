@@ -87,22 +87,30 @@ save(
 save(
   "icon-phone.png",
   drawContactIconBadge((ctx) => {
-    ctx.fillStyle = WHITE;
     ctx.strokeStyle = WHITE;
+    ctx.fillStyle = WHITE;
     ctx.lineWidth = 1.5;
     ctx.lineCap = "round";
+    ctx.lineJoin = "round";
 
-    roundRect(ctx, 9, 4.5, 6, 15, 1.3);
+    roundRect(ctx, 4.5, 6, 10.5, 12, 1.8);
     ctx.stroke();
 
-    roundRect(ctx, 10, 6.5, 4, 10, 0.5);
+    roundRect(ctx, 15, 4.5, 4.5, 14.5, 1.2);
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.arc(12, 5.8, 0.4, 0, Math.PI * 2);
+    roundRect(ctx, 6, 8.5, 5.5, 2.8, 0.6);
     ctx.fill();
 
-    ctx.fillRect(10.8, 16.5, 2.4, 0.6);
+    ctx.beginPath();
+    ctx.arc(7.2, 14.5, 0.45, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(9.5, 14.5, 0.45, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(11.8, 14.5, 0.45, 0, Math.PI * 2);
+    ctx.fill();
   })
 );
 
