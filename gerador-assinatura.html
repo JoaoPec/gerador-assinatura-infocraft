@@ -80,6 +80,7 @@
       logo: "assets/infocraft-logo-crop.png",
       computer: "assets/computer-icon.png",
       certification: "assets/mps-br-certification.png",
+      website: "assets/website-globe.png",
       facebook: "assets/social-facebook.png",
       linkedin: "assets/social-linkedin.png",
       instagram: "assets/social-instagram.png"
@@ -301,7 +302,7 @@
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
         '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:23px; font-family:Arial, Helvetica, sans-serif;">&#9993;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="mailto:' + escapeHtml(data.email) + '" style="color:#0b226f; text-decoration:none;">' + escapeHtml(data.email) + '</a></td></tr>' +
         '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#9742;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="' + telHref + '" style="color:#0b226f; text-decoration:none;">' + escapeHtml(data.phone) + '</a></td></tr>' +
-        '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:19px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#127760;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="https://www.infocraft.com.br" style="color:#0b226f; text-decoration:none;">www.infocraft.com.br</a></td></tr>' +
+        '<tr><td width="28" valign="middle" style="width:28px;"><img src="' + assets.website + '" width="24" height="24" alt="Site" border="0" style="display:block; width:24px; height:24px; border:0; outline:none; text-decoration:none;"></td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="https://www.infocraft.com.br" style="color:#0b226f; text-decoration:none;">www.infocraft.com.br</a></td></tr>' +
         '</table></td></tr></table></td><td width="40" style="width:40px; font-size:0; line-height:0;">&nbsp;</td>' +
         '</tr></table></td></tr>' +
         '<tr><td width="800" height="110" valign="top" style="width:800px; height:110px; padding:0; margin:0;">' +
@@ -360,31 +361,6 @@
       ctx.fillText(text, x, y);
     }
 
-    function drawGlobeIcon(ctx, x, y, size, color) {
-      var radius = size / 2;
-      var centerX = x + radius;
-      var centerY = y + radius;
-
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius - 1, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.ellipse(centerX, centerY, radius * 0.45, radius - 1, 0, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(x + 3, centerY);
-      ctx.lineTo(x + size - 3, centerY);
-      ctx.moveTo(centerX, y + 2);
-      ctx.lineTo(centerX, y + size - 2);
-      ctx.stroke();
-      ctx.restore();
-    }
-
     function downloadSignatureImage() {
       updateAvatar(function () {
         updateQr(function () {
@@ -394,6 +370,7 @@
             loadImage(qrDataUrl),
             loadImage(assets.computer),
             loadImage(assets.certification),
+            loadImage(assets.website),
             loadImage(assets.facebook),
             loadImage(assets.linkedin),
             loadImage(assets.instagram)
@@ -446,7 +423,7 @@
           drawText(ctx, data.email, 545, 143, { font: "14px Arial", color: "#0b226f" });
           drawText(ctx, "☎", 510, 170, { font: "23px Arial", color: "#000078" });
           drawText(ctx, data.phone, 545, 174, { font: "14px Arial", color: "#0b226f" });
-          drawGlobeIcon(ctx, 511, 201, 20, "#000078");
+          ctx.drawImage(images[5], 510, 198, 24, 24);
           drawText(ctx, "www.infocraft.com.br", 545, 205, { font: "14px Arial", color: "#0b226f" });
 
           ctx.fillStyle = "#000078";
@@ -463,9 +440,9 @@
           ctx.drawImage(images[4], 325, 308, 74, 74);
 
           drawText(ctx, "Nos siga nas redes sociais", 615, 314, { font: "italic 18px Arial", color: "#000078", align: "center" });
-          ctx.drawImage(images[5], 486, 344, 44, 44);
-          ctx.drawImage(images[6], 557, 344, 44, 44);
-          ctx.drawImage(images[7], 628, 344, 44, 44);
+          ctx.drawImage(images[6], 486, 344, 44, 44);
+          ctx.drawImage(images[7], 557, 344, 44, 44);
+          ctx.drawImage(images[8], 628, 344, 44, 44);
 
           var link = document.createElement("a");
           link.href = canvas.toDataURL("image/png");
