@@ -65,7 +65,7 @@
         <input class="mb-4 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="emailInput" type="email" placeholder="email@infocraft.com.br">
 
         <label class="mb-1.5 block text-sm font-bold text-slate-700" for="phoneInput">Telefone</label>
-        <input class="mb-5 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="phoneInput" type="text" placeholder="71 98431-3715">
+        <input class="mb-5 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="phoneInput" type="text" placeholder="71984313715" title="Usado na assinatura e no link do QR (WhatsApp). So numeros com DDD.">
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button class="h-11 rounded-md bg-[#000078] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#0505a8] focus:outline-none focus:ring-2 focus:ring-[#000078]/25" id="copyButton" type="button"><i class="fa-solid fa-code mr-2"></i>Copiar HTML/CSS</button>
@@ -83,7 +83,7 @@
           </div>
         </div>
         <div id="signaturePreview" class="preview-frame rounded-md border border-slate-200 bg-white p-3"></div>
-        <p class="mt-4 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-sm leading-5 text-slate-600">Como inserir: use Copiar HTML/CSS para manter os links clicaveis no e-mail. Baixar imagem gera um PNG da assinatura (800x400), igual a previa.</p>
+        <p class="mt-4 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-sm leading-5 text-slate-600">Como inserir: use Copiar HTML/CSS para manter os links clicaveis no e-mail (site, redes e QR com WhatsApp Web a partir do telefone). Baixar imagem gera um PNG da assinatura (800x400), igual a previa.</p>
       </div>
     </div>
   </div>
@@ -103,8 +103,8 @@
     var assets = Object.assign({}, fallbackAssets, window.INLINE_SIGNATURE_ASSETS || {});
 
     var signatureLinks = {
-      website: "https://infocraftweb.com.br/site",
-      websiteLabel: "infocraftweb.com.br/site",
+      website: "https://www.infocraft.com.br",
+      websiteLabel: "www.infocraft.com.br",
       facebook: "https://www.facebook.com/people/Infocraft-Solu%C3%A7%C3%B5es-Tecnol%C3%B3gicas/100063745890630/",
       linkedin: "https://www.linkedin.com/company/infocraft-online/posts/?feedView=all",
       instagram: "https://www.instagram.com/infocrafttecnologia/"
@@ -135,6 +135,34 @@
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
+    }
+
+    function onlyDigits(value) {
+      return String(value || "").replace(/\D/g, "");
+    }
+
+    function normalizeBrazilPhoneDigits(value) {
+      var digits = onlyDigits(value);
+      if (!digits) {
+        return "";
+      }
+
+      digits = digits.replace(/^0+/, "");
+
+      if (digits.indexOf("55") === 0) {
+        digits = digits.slice(2);
+      }
+
+      return "55" + digits;
+    }
+
+    function whatsappHref(value) {
+      var digits = normalizeBrazilPhoneDigits(value);
+      if (!digits) {
+        return "";
+      }
+
+      return "https://wa.me/" + digits;
     }
 
     function splitName(fullName) {
@@ -289,8 +317,18 @@
       return '<img src="' + avatarDataUrl + '" width="106" height="106" alt="Foto de ' + escapeHtml(data.name) + '" border="0" style="display:block; width:106px; height:106px; border:0; outline:none; text-decoration:none;">';
     }
 
-    function qrHtml() {
-      return '<img src="' + qrDataUrl + '" width="72" height="72" alt="QR code" border="0" style="display:block; width:72px; height:72px; border:0; outline:none; text-decoration:none;">';
+    function qrHtml(phone) {
+      var href = whatsappHref(phone);
+      var img = '<img src="' + qrDataUrl + '" width="72" height="72" alt="QR code WhatsApp" border="0" style="display:block; width:72px; height:72px; border:0; outline:none; text-decoration:none;">';
+      if (!href) {
+        return img;
+      }
+
+      return '<a href="' + escapeHtml(href) + '"' + externalLinkTarget + ' title="' + escapeHtml(href) + '" style="color:#000078; text-decoration:none;">' + img + '</a>';
+    }
+
+    function computerIconHtml() {
+      return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="62" height="62" style="width:62px; height:62px; border-collapse:collapse;"><tr><td width="62" height="62" align="center" valign="middle" style="width:62px; height:62px; border:2px solid #40a7ff; font-size:0; line-height:0;"><img src="' + assets.computer + '" width="58" height="58" alt="Soluções digitais" border="0" style="display:block; width:58px; height:58px; border:0; outline:none; text-decoration:none;"></td></tr></table>';
     }
 
     function lateralConnectorHtml() {
@@ -303,7 +341,7 @@
         '<td width="33" height="110" style="width:33px; height:110px; font-size:0; line-height:0;">&nbsp;</td>' +
         '</tr>' +
         '<tr>' +
-        '<td width="33" height="12" align="right" valign="bottom" style="width:33px; height:12px; border-bottom:' + lineWidth + ' solid ' + lineColor + '; padding:0; font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:22px; line-height:1px;"><span style="display:inline-block; position:relative; top:1px; left:1.5px;">&#9679;</span></td>' +
+        '<td width="33" height="12" align="right" valign="bottom" style="width:33px; height:12px; border-bottom:' + lineWidth + ' solid ' + lineColor + '; padding:0; font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:22px; line-height:1px;"><span style="display:inline-block; position:relative; top:0; left:1.5px;">&#9679;</span></td>' +
         '</tr>' +
         '</table>';
     }
@@ -324,7 +362,7 @@
         '<td width="36" bgcolor="#ffffff" style="width:36px; font-size:0; line-height:0; background-color:#ffffff;">&nbsp;</td>' +
         '<td width="252" valign="middle" bgcolor="#ffffff" style="width:252px; padding-top:50px; background-color:#ffffff;"><img src="' + assets.logo + '" width="240" alt="Infocraft - Consultoria, Tecnologia e Inovacao" border="0" style="display:block; width:240px; height:auto; border:0; outline:none; text-decoration:none;"></td>' +
         '<td width="35" valign="middle" bgcolor="#ffffff" style="width:35px; padding-top:50px; background-color:#ffffff;">' + lateralConnectorHtml() + '</td>' +
-        '<td width="130" valign="top" align="center" bgcolor="#ffffff" style="width:130px; padding-top:58px; background-color:#ffffff;">' + photoHtml(data) + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" align="center" style="width:72px; margin:20px auto 0; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml() + '</td></tr></table></td>' +
+        '<td width="130" valign="top" align="center" bgcolor="#ffffff" style="width:130px; padding-top:58px; background-color:#ffffff;">' + photoHtml(data) + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" align="center" style="width:72px; margin:20px auto 0; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml(data.phone) + '</td></tr></table></td>' +
         '<td width="47" bgcolor="#ffffff" style="width:47px; font-size:0; line-height:0; background-color:#ffffff;">&nbsp;</td>' +
         '<td width="260" valign="top" bgcolor="#ffffff" style="width:260px; padding-top:55px; background-color:#ffffff;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
         '<tr><td style="font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:27px; line-height:31px; font-weight:bold; padding:0;">' + escapeHtml(nameParts.first) + ' <span style="font-weight:normal;">' + escapeHtml(nameParts.rest) + '</span></td></tr>' +
@@ -340,8 +378,8 @@
         '<tr><td width="800" height="110" valign="top" bgcolor="#ffffff" style="width:800px; height:110px; padding:0; margin:0; background-color:#ffffff;">' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; height:110px; border-collapse:collapse;"><tr>' +
         '<td width="430" height="110" valign="middle" bgcolor="#000078" style="width:430px; height:110px; background-color:#000078;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="430" style="width:430px; border-collapse:collapse;"><tr>' +
-        '<td width="24" style="width:24px; font-size:0; line-height:0;">&nbsp;</td><td width="58" align="center" valign="middle" style="width:58px; border:2px solid #40a7ff;"><img src="' + assets.computer + '" width="58" height="58" alt="Soluções digitais" border="0" style="display:block; width:58px; height:58px; border:0; outline:none; text-decoration:none;"></td>' +
-        '<td width="16" style="width:16px; font-size:0; line-height:0;">&nbsp;</td><td width="206" valign="middle" style="width:206px; font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:17px; line-height:18px; letter-spacing:0;">Soluções completas para<br>municípios e educação.</td>' +
+        '<td width="24" style="width:24px; font-size:0; line-height:0;">&nbsp;</td><td width="62" align="center" valign="middle" style="width:62px; font-size:0; line-height:0;">' + computerIconHtml() + '</td>' +
+        '<td width="16" style="width:16px; font-size:0; line-height:0;">&nbsp;</td><td width="202" valign="middle" style="width:202px; font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:17px; line-height:18px; letter-spacing:0;">Soluções completas para<br>municípios e educação.</td>' +
         '<td width="96" align="center" valign="middle" style="width:96px;"><img src="' + assets.certification + '" width="82" height="104" alt="Certificação MPS BR" border="0" style="display:block; width:82px; height:104px; border:0; outline:none; text-decoration:none;"></td><td width="30" style="width:30px; font-size:0; line-height:0;">&nbsp;</td>' +
         '</tr></table></td>' +
         '<td width="370" height="110" valign="middle" bgcolor="#eef2ff" style="width:370px; height:110px; background-color:#eef2ff;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="370" style="width:370px; border-collapse:collapse;"><tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:18px; line-height:22px; font-style:italic; padding-bottom:10px;">Nos siga nas redes sociais</td></tr><tr><td align="center"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse:collapse;"><tr><td align="center" width="58" style="width:58px;"><a href="' + escapeHtml(signatureLinks.facebook) + '"' + externalLinkTarget + ' style="color:#000078; text-decoration:none;"><img src="' + assets.facebook + '" width="44" height="44" alt="Facebook Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td><td align="center" width="58" style="width:58px;"><a href="' + escapeHtml(signatureLinks.linkedin) + '"' + externalLinkTarget + ' style="color:#000078; text-decoration:none;"><img src="' + assets.linkedin + '" width="44" height="44" alt="LinkedIn Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td><td align="center" width="58" style="width:58px;"><a href="' + escapeHtml(signatureLinks.instagram) + '"' + externalLinkTarget + ' style="color:#000078; text-decoration:none;"><img src="' + assets.instagram + '" width="44" height="44" alt="Instagram Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td></tr></table></td></tr></table></td>' +
