@@ -65,7 +65,7 @@
         <input class="mb-4 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="emailInput" type="email" placeholder="email@infocraft.com.br">
 
         <label class="mb-1.5 block text-sm font-bold text-slate-700" for="phoneInput">Telefone</label>
-        <input class="mb-5 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="phoneInput" type="text" placeholder="71984313715" title="Usado na assinatura e no link do QR (WhatsApp). So numeros com DDD.">
+        <input class="mb-5 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="phoneInput" type="tel" inputmode="numeric" maxlength="16" placeholder="(71) 98431-3715" title="DDD + numero. O link do QR usa apenas os digitos.">
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button class="h-11 rounded-md bg-[#000078] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#0505a8] focus:outline-none focus:ring-2 focus:ring-[#000078]/25" id="copyButton" type="button"><i class="fa-solid fa-code mr-2"></i>Copiar HTML/CSS</button>
@@ -141,7 +141,7 @@
       return String(value || "").replace(/\D/g, "");
     }
 
-    function normalizeBrazilPhoneDigits(value) {
+    function brazilNationalDigits(value) {
       var digits = onlyDigits(value);
       if (!digits) {
         return "";
@@ -153,7 +153,69 @@
         digits = digits.slice(2);
       }
 
-      return "55" + digits;
+      return digits.slice(0, 11);
+    }
+
+    function normalizeBrazilPhoneDigits(value) {
+      var digits = brazilNationalDigits(value);
+      return digits ? "55" + digits : "";
+    }
+
+    function formatBrazilPhoneDisplay(value) {
+      var digits = brazilNationalDigits(value);
+      if (!digits) {
+        return "";
+      }
+
+      if (digits.length <= 2) {
+        return "(" + digits;
+      }
+
+      var ddd = digits.slice(0, 2);
+      var rest = digits.slice(2);
+      var isMobile = rest.charAt(0) === "9";
+
+      if (digits.length <= 6) {
+        return "(" + ddd + ") " + rest;
+      }
+
+      if (isMobile) {
+        if (rest.length <= 5) {
+          return "(" + ddd + ") " + rest;
+        }
+
+        return "(" + ddd + ") " + rest.slice(0, 5) + "-" + rest.slice(5);
+      }
+
+      if (rest.length <= 4) {
+        return "(" + ddd + ") " + rest;
+      }
+
+      return "(" + ddd + ") " + rest.slice(0, 4) + "-" + rest.slice(4);
+    }
+
+    function applyPhoneInputMask(input) {
+      var selectionStart = input.selectionStart;
+      var digitsBefore = onlyDigits(String(input.value || "").slice(0, selectionStart)).length;
+      var formatted = formatBrazilPhoneDisplay(input.value);
+      input.value = formatted;
+
+      var cursor = 0;
+      var seen = 0;
+
+      for (var i = 0; i < formatted.length; i++) {
+        if (/\d/.test(formatted.charAt(i))) {
+          seen++;
+        }
+
+        cursor = i + 1;
+
+        if (seen >= digitsBefore) {
+          break;
+        }
+      }
+
+      input.setSelectionRange(cursor, cursor);
     }
 
     function whatsappHref(value) {
@@ -371,7 +433,7 @@
         '<tr><td height="14" style="height:14px; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td>' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
         '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:23px; font-family:Arial, Helvetica, sans-serif;">&#9993;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="mailto:' + escapeHtml(data.email) + '" style="color:#0b226f; text-decoration:none;">' + escapeHtml(data.email) + '</a></td></tr>' +
-        '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#9742;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;">' + escapeHtml(data.phone) + '</td></tr>' +
+        '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#9742;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;">' + escapeHtml(formatBrazilPhoneDisplay(data.phone)) + '</td></tr>' +
         '<tr><td width="28" valign="middle" style="width:28px;"><img src="' + assets.website + '" width="24" height="24" alt="Site" border="0" style="display:block; width:24px; height:24px; border:0; outline:none; text-decoration:none;"></td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="' + escapeHtml(signatureLinks.website) + '"' + externalLinkTarget + ' style="color:#0b226f; text-decoration:none;">' + escapeHtml(signatureLinks.websiteLabel) + '</a></td></tr>' +
         '</table></td></tr></table></td><td width="40" bgcolor="#ffffff" style="width:40px; font-size:0; line-height:0; background-color:#ffffff;">&nbsp;</td>' +
         '</tr></table></td></tr>' +
@@ -616,7 +678,10 @@
     });
     fields.role.addEventListener("input", renderSignature);
     fields.email.addEventListener("input", renderSignature);
-    fields.phone.addEventListener("input", renderSignature);
+    fields.phone.addEventListener("input", function () {
+      applyPhoneInputMask(fields.phone);
+      renderSignature();
+    });
 
     document.getElementById("copyButton").addEventListener("click", copySignatureHtml);
     document.getElementById("downloadButton").addEventListener("click", downloadSignatureImage);
