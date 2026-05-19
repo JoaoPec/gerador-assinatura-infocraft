@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gerador de Assinatura Infocraft</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     body {
@@ -16,6 +18,19 @@
     .preview-frame {
       overflow-x: auto;
       background: #ffffff;
+    }
+
+    #signaturePreview.capturing-signature {
+      padding: 0 !important;
+      border: none !important;
+      overflow: visible !important;
+      width: 800px;
+      max-width: 800px;
+      background: #ffffff;
+    }
+
+    #signaturePreview.capturing-signature table {
+      margin: 0 !important;
     }
   </style>
 </head>
@@ -50,12 +65,11 @@
         <input class="mb-4 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="emailInput" type="email" placeholder="email@infocraft.com.br">
 
         <label class="mb-1.5 block text-sm font-bold text-slate-700" for="phoneInput">Telefone</label>
-        <input class="mb-5 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="phoneInput" type="text" placeholder="Telefone/WhatsApp">
+        <input class="mb-5 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="phoneInput" type="text" placeholder="71 98431-3715">
 
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button class="h-11 rounded-md bg-[#000078] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#0505a8] focus:outline-none focus:ring-2 focus:ring-[#000078]/25" id="copyButton" type="button"><i class="fa-solid fa-code mr-2"></i>Copiar HTML/CSS</button>
           <button class="h-11 rounded-md bg-[#000078] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#0505a8] focus:outline-none focus:ring-2 focus:ring-[#000078]/25" id="downloadButton" type="button"><i class="fa-solid fa-download mr-2"></i>Baixar imagem</button>
-          <button class="h-11 rounded-md bg-slate-700 px-4 text-sm font-bold text-white shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500/25" id="resetButton" type="button">Limpar imagens</button>
         </div>
 
         <div class="mt-4 min-h-5 text-sm font-medium text-emerald-700" id="status" aria-live="polite"></div>
@@ -69,7 +83,7 @@
           </div>
         </div>
         <div id="signaturePreview" class="preview-frame rounded-md border border-slate-200 bg-white p-3"></div>
-        <p class="mt-4 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-sm leading-5 text-slate-600">Como inserir: use Copiar HTML/CSS para manter os links clicaveis no e-mail. Se o seu cliente nao aceitar HTML, use Baixar imagem e insira o PNG no editor de assinatura.</p>
+        <p class="mt-4 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-sm leading-5 text-slate-600">Como inserir: use Copiar HTML/CSS para manter os links clicaveis no e-mail. Baixar imagem gera um PNG da assinatura (800x400), igual a previa.</p>
       </div>
     </div>
   </div>
@@ -87,6 +101,16 @@
       instagram: "assets/social-instagram.png"
     };
     var assets = Object.assign({}, fallbackAssets, window.INLINE_SIGNATURE_ASSETS || {});
+
+    var signatureLinks = {
+      website: "https://infocraftweb.com.br/site",
+      websiteLabel: "infocraftweb.com.br/site",
+      facebook: "https://www.facebook.com/people/Infocraft-Solu%C3%A7%C3%B5es-Tecnol%C3%B3gicas/100063745890630/",
+      linkedin: "https://www.linkedin.com/company/infocraft-online/posts/?feedView=all",
+      instagram: "https://www.instagram.com/infocrafttecnologia/"
+    };
+
+    var externalLinkTarget = ' target="_blank" rel="noopener noreferrer"';
 
     var uploadedPhotoDataUrl = "";
     var avatarDataUrl = "";
@@ -111,23 +135,6 @@
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
-    }
-
-    function onlyDigits(value) {
-      return String(value || "").replace(/\D/g, "");
-    }
-
-    function whatsappHref(value) {
-      var digits = onlyDigits(value);
-      if (!digits) {
-        return "#";
-      }
-
-      if (digits.indexOf("55") !== 0) {
-        digits = "55" + digits;
-      }
-
-      return "https://wa.me/" + digits;
     }
 
     function splitName(fullName) {
@@ -287,7 +294,18 @@
     }
 
     function lateralConnectorHtml() {
-      return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td height="1" style="height:1px; font-size:0; line-height:0; background-color:#9ca4c7;">&nbsp;</td></tr><tr><td height="110" style="height:110px; border-left:1px solid #9ca4c7; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td height="10" style="height:10px; padding:0; font-size:0; line-height:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; border-collapse:collapse;"><tr><td width="10" valign="middle" align="left" style="width:10px; font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:14px; line-height:10px;">&#9679;</td><td width="25" valign="bottom" style="width:25px; height:10px; border-bottom:1px solid #9ca4c7; font-size:0; line-height:0;">&nbsp;</td></tr></table></td></tr></table>';
+      var lineColor = "#9ca4c7";
+      var lineWidth = "2px";
+      return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="35" style="width:35px; margin-left:-6px; border-collapse:collapse;">' +
+        '<tr><td colspan="2" height="2" style="height:2px; font-size:0; line-height:0; background-color:' + lineColor + ';">&nbsp;</td></tr>' +
+        '<tr>' +
+        '<td width="2" rowspan="2" valign="top" bgcolor="' + lineColor + '" style="width:2px; background-color:' + lineColor + '; font-size:0; line-height:0;">&nbsp;</td>' +
+        '<td width="33" height="110" style="width:33px; height:110px; font-size:0; line-height:0;">&nbsp;</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td width="33" height="12" align="right" valign="bottom" style="width:33px; height:12px; border-bottom:' + lineWidth + ' solid ' + lineColor + '; padding:0; font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:22px; line-height:1px;"><span style="display:inline-block; position:relative; top:1px; left:1.5px;">&#9679;</span></td>' +
+        '</tr>' +
+        '</table>';
     }
 
     function buildSignatureHtml() {
@@ -298,37 +316,74 @@
         phone: fields.phone.value
       };
       var nameParts = splitName(data.name);
-      var telHref = whatsappHref(data.phone);
       var lineWidth = nameLineWidth(data.name);
 
-      return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; font-family:Arial, Helvetica, sans-serif; color:#000078; background-color:#ffffff;">' +
-        '<tr><td width="800" height="290" valign="top" style="width:800px; height:290px; padding:0; margin:0;">' +
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; border-collapse:collapse;"><tr>' +
-        '<td width="36" style="width:36px; font-size:0; line-height:0;">&nbsp;</td>' +
-        '<td width="252" valign="middle" style="width:252px; padding-top:50px;"><img src="' + assets.logo + '" width="240" alt="Infocraft - Consultoria, Tecnologia e Inovacao" border="0" style="display:block; width:240px; height:auto; border:0; outline:none; text-decoration:none;"></td>' +
-        '<td width="35" valign="middle" style="width:35px; padding-top:50px;">' + lateralConnectorHtml() + '</td>' +
-        '<td width="130" valign="top" align="center" style="width:130px; padding-top:58px;">' + photoHtml(data) + '<img src="' + assets.connector + '" width="72" height="18" alt="" border="0" style="display:block; width:72px; height:18px; border:0; outline:none; text-decoration:none;">' + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" style="width:72px; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml() + '</td></tr></table></td>' +
-        '<td width="47" style="width:47px; font-size:0; line-height:0;">&nbsp;</td>' +
-        '<td width="260" valign="top" style="width:260px; padding-top:55px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
+      return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" bgcolor="#ffffff" style="width:800px; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; font-family:Arial, Helvetica, sans-serif; color:#000078; background-color:#ffffff;">' +
+        '<tr><td width="800" height="290" valign="top" bgcolor="#ffffff" style="width:800px; height:290px; padding:0; margin:0; background-color:#ffffff;">' +
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" bgcolor="#ffffff" style="width:800px; border-collapse:collapse; background-color:#ffffff;"><tr>' +
+        '<td width="36" bgcolor="#ffffff" style="width:36px; font-size:0; line-height:0; background-color:#ffffff;">&nbsp;</td>' +
+        '<td width="252" valign="middle" bgcolor="#ffffff" style="width:252px; padding-top:50px; background-color:#ffffff;"><img src="' + assets.logo + '" width="240" alt="Infocraft - Consultoria, Tecnologia e Inovacao" border="0" style="display:block; width:240px; height:auto; border:0; outline:none; text-decoration:none;"></td>' +
+        '<td width="35" valign="middle" bgcolor="#ffffff" style="width:35px; padding-top:50px; background-color:#ffffff;">' + lateralConnectorHtml() + '</td>' +
+        '<td width="130" valign="top" align="center" bgcolor="#ffffff" style="width:130px; padding-top:58px; background-color:#ffffff;">' + photoHtml(data) + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="72" align="center" style="width:72px; margin:20px auto 0; border-collapse:collapse;"><tr><td align="center" valign="middle" width="72" height="72" style="width:72px; height:72px;">' + qrHtml() + '</td></tr></table></td>' +
+        '<td width="47" bgcolor="#ffffff" style="width:47px; font-size:0; line-height:0; background-color:#ffffff;">&nbsp;</td>' +
+        '<td width="260" valign="top" bgcolor="#ffffff" style="width:260px; padding-top:55px; background-color:#ffffff;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
         '<tr><td style="font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:27px; line-height:31px; font-weight:bold; padding:0;">' + escapeHtml(nameParts.first) + ' <span style="font-weight:normal;">' + escapeHtml(nameParts.rest) + '</span></td></tr>' +
         '<tr><td height="3" style="height:3px; font-size:0; line-height:0; padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="' + lineWidth + '" style="width:' + lineWidth + 'px; border-collapse:collapse;"><tr><td height="3" bgcolor="#000078" style="height:3px; font-size:0; line-height:0; background-color:#000078;">&nbsp;</td></tr></table></td></tr>' +
         '<tr><td style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:17px; line-height:22px; padding-top:6px;">' + escapeHtml(data.role) + '</td></tr>' +
         '<tr><td height="14" style="height:14px; font-size:0; line-height:0;">&nbsp;</td></tr><tr><td>' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
         '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:23px; font-family:Arial, Helvetica, sans-serif;">&#9993;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="mailto:' + escapeHtml(data.email) + '" style="color:#0b226f; text-decoration:none;">' + escapeHtml(data.email) + '</a></td></tr>' +
-        '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#9742;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="' + telHref + '" style="color:#0b226f; text-decoration:none;">' + escapeHtml(data.phone) + '</a></td></tr>' +
-        '<tr><td width="28" valign="middle" style="width:28px;"><img src="' + assets.website + '" width="24" height="24" alt="Site" border="0" style="display:block; width:24px; height:24px; border:0; outline:none; text-decoration:none;"></td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="https://infocraftweb.com.br/site/" style="color:#0b226f; text-decoration:none;">infocraftweb.com.br/site/</a></td></tr>' +
-        '</table></td></tr></table></td><td width="40" style="width:40px; font-size:0; line-height:0;">&nbsp;</td>' +
+        '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#9742;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;">' + escapeHtml(data.phone) + '</td></tr>' +
+        '<tr><td width="28" valign="middle" style="width:28px;"><img src="' + assets.website + '" width="24" height="24" alt="Site" border="0" style="display:block; width:24px; height:24px; border:0; outline:none; text-decoration:none;"></td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="' + escapeHtml(signatureLinks.website) + '"' + externalLinkTarget + ' style="color:#0b226f; text-decoration:none;">' + escapeHtml(signatureLinks.websiteLabel) + '</a></td></tr>' +
+        '</table></td></tr></table></td><td width="40" bgcolor="#ffffff" style="width:40px; font-size:0; line-height:0; background-color:#ffffff;">&nbsp;</td>' +
         '</tr></table></td></tr>' +
-        '<tr><td width="800" height="110" valign="top" style="width:800px; height:110px; padding:0; margin:0;">' +
+        '<tr><td width="800" height="110" valign="top" bgcolor="#ffffff" style="width:800px; height:110px; padding:0; margin:0; background-color:#ffffff;">' +
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="800" style="width:800px; height:110px; border-collapse:collapse;"><tr>' +
         '<td width="430" height="110" valign="middle" bgcolor="#000078" style="width:430px; height:110px; background-color:#000078;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="430" style="width:430px; border-collapse:collapse;"><tr>' +
         '<td width="24" style="width:24px; font-size:0; line-height:0;">&nbsp;</td><td width="58" align="center" valign="middle" style="width:58px; border:2px solid #40a7ff;"><img src="' + assets.computer + '" width="58" height="58" alt="Soluções digitais" border="0" style="display:block; width:58px; height:58px; border:0; outline:none; text-decoration:none;"></td>' +
         '<td width="16" style="width:16px; font-size:0; line-height:0;">&nbsp;</td><td width="206" valign="middle" style="width:206px; font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:17px; line-height:18px; letter-spacing:0;">Soluções completas para<br>municípios e educação.</td>' +
         '<td width="96" align="center" valign="middle" style="width:96px;"><img src="' + assets.certification + '" width="82" height="104" alt="Certificação MPS BR" border="0" style="display:block; width:82px; height:104px; border:0; outline:none; text-decoration:none;"></td><td width="30" style="width:30px; font-size:0; line-height:0;">&nbsp;</td>' +
         '</tr></table></td>' +
-        '<td width="370" height="110" valign="middle" bgcolor="#eef2ff" style="width:370px; height:110px; background-color:#eef2ff;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="370" style="width:370px; border-collapse:collapse;"><tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:18px; line-height:22px; font-style:italic; padding-bottom:10px;">Nos siga nas redes sociais</td></tr><tr><td align="center"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse:collapse;"><tr><td align="center" width="58" style="width:58px;"><a href="https://www.facebook.com/people/Infocraft-Solu%C3%A7%C3%B5es-Tecnol%C3%B3gicas/100063745890630/#" style="color:#000078; text-decoration:none;"><img src="' + assets.facebook + '" width="44" height="44" alt="Facebook Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td><td align="center" width="58" style="width:58px;"><a href="https://www.linkedin.com/company/infocraft-online/posts/?feedView=all" style="color:#000078; text-decoration:none;"><img src="' + assets.linkedin + '" width="44" height="44" alt="LinkedIn Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td><td align="center" width="58" style="width:58px;"><a href="https://www.instagram.com/infocrafttecnologia/" style="color:#000078; text-decoration:none;"><img src="' + assets.instagram + '" width="44" height="44" alt="Instagram Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td></tr></table></td></tr></table></td>' +
+        '<td width="370" height="110" valign="middle" bgcolor="#eef2ff" style="width:370px; height:110px; background-color:#eef2ff;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="370" style="width:370px; border-collapse:collapse;"><tr><td align="center" style="font-family:Arial, Helvetica, sans-serif; color:#000078; font-size:18px; line-height:22px; font-style:italic; padding-bottom:10px;">Nos siga nas redes sociais</td></tr><tr><td align="center"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse:collapse;"><tr><td align="center" width="58" style="width:58px;"><a href="' + escapeHtml(signatureLinks.facebook) + '"' + externalLinkTarget + ' style="color:#000078; text-decoration:none;"><img src="' + assets.facebook + '" width="44" height="44" alt="Facebook Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td><td align="center" width="58" style="width:58px;"><a href="' + escapeHtml(signatureLinks.linkedin) + '"' + externalLinkTarget + ' style="color:#000078; text-decoration:none;"><img src="' + assets.linkedin + '" width="44" height="44" alt="LinkedIn Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td><td align="center" width="58" style="width:58px;"><a href="' + escapeHtml(signatureLinks.instagram) + '"' + externalLinkTarget + ' style="color:#000078; text-decoration:none;"><img src="' + assets.instagram + '" width="44" height="44" alt="Instagram Infocraft" border="0" style="display:block; width:44px; height:44px; border:0; outline:none; text-decoration:none;"></a></td></tr></table></td></tr></table></td>' +
         '</tr></table></td></tr></table>';
+    }
+
+    function buildPrintDocumentHtml() {
+      return "<!DOCTYPE html><html lang=\"pt-BR\" style=\"background-color:#ffffff;\"><head><meta charset=\"utf-8\"><meta name=\"color-scheme\" content=\"light only\"><title>Assinatura Infocraft</title><style>" +
+        "html,body{margin:0;padding:0;width:800px;height:400px;overflow:hidden;background-color:#ffffff !important;background:#ffffff !important;}" +
+        "body{font-family:Arial,Helvetica,sans-serif;color-scheme:only light;-webkit-print-color-adjust:exact;print-color-adjust:exact;}" +
+        "@page{size:800px 400px;margin:0;background:#ffffff;}" +
+        "@media print{html,body{width:800px;height:400px;background-color:#ffffff !important;}}" +
+        "table{border-collapse:collapse;}" +
+        "</style></head><body style=\"margin:0;padding:0;background-color:#ffffff;\">" + buildSignatureHtml() + "</body></html>";
+    }
+
+    function openSignaturePrintWindow() {
+      var win = window.open("", "_blank", "width=840,height=440");
+      if (!win) {
+        return null;
+      }
+
+      win.document.open();
+      win.document.write(buildPrintDocumentHtml());
+      win.document.close();
+      return win;
+    }
+
+    function preparePrintWindow(win) {
+      if (!win || !win.document) {
+        return Promise.reject(new Error("Print window unavailable"));
+      }
+
+      var target = win.document.querySelector("table");
+      if (!target) {
+        return Promise.reject(new Error("Signature table not found"));
+      }
+
+      var fontReady = win.document.fonts && win.document.fonts.ready ? win.document.fonts.ready : Promise.resolve();
+      return Promise.all([waitForImages(win.document.body), fontReady, nextPaint()]).then(function () {
+        return target;
+      });
     }
 
     function renderSignature() {
@@ -368,113 +423,120 @@
       statusBox.textContent = "HTML/CSS da assinatura copiado.";
     }
 
-    function drawText(ctx, text, x, y, options) {
-      ctx.fillStyle = options.color || "#000078";
-      ctx.font = options.font;
-      ctx.textAlign = options.align || "left";
-      ctx.textBaseline = options.baseline || "top";
-      ctx.fillText(text, x, y);
+    function waitForImages(root) {
+      var imgs = root.querySelectorAll("img");
+      if (!imgs.length) {
+        return Promise.resolve();
+      }
+
+      return Promise.all(Array.prototype.map.call(imgs, function (img) {
+        if (img.complete && img.naturalWidth) {
+          return Promise.resolve();
+        }
+
+        return new Promise(function (resolve) {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      }));
+    }
+
+    function nextPaint() {
+      return new Promise(function (resolve) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(resolve);
+        });
+      });
+    }
+
+    function capturePreviewBlob(target) {
+      var options = {
+        cacheBust: true,
+        pixelRatio: 2,
+        width: 800,
+        height: 400,
+        canvasWidth: 800,
+        canvasHeight: 400,
+        backgroundColor: "#ffffff",
+        style: {
+          margin: "0",
+          padding: "0",
+          boxSizing: "border-box",
+          transform: "none",
+          backgroundColor: "#ffffff"
+        }
+      };
+
+      if (window.htmlToImage && htmlToImage.toBlob) {
+        return htmlToImage.toBlob(target, options);
+      }
+
+      if (typeof html2canvas !== "function") {
+        return Promise.reject(new Error("Renderer unavailable"));
+      }
+
+      return html2canvas(target, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        foreignObjectRendering: true,
+        logging: false,
+        width: 800,
+        height: 400,
+        windowWidth: document.documentElement.clientWidth,
+        windowHeight: document.documentElement.clientHeight,
+        scrollX: 0,
+        scrollY: -window.scrollY
+      }).then(function (canvas) {
+        return new Promise(function (resolve, reject) {
+          canvas.toBlob(function (blob) {
+            if (blob) {
+              resolve(blob);
+              return;
+            }
+            reject(new Error("Empty blob"));
+          }, "image/png");
+        });
+      });
     }
 
     function downloadSignatureImage() {
       updateAvatar(function () {
         updateQr(function () {
-          Promise.all([
-            loadImage(assets.logo),
-            loadImage(avatarDataUrl),
-            loadImage(qrDataUrl),
-            loadImage(assets.computer),
-            loadImage(assets.certification),
-            loadImage(assets.connector),
-            loadImage(assets.website),
-            loadImage(assets.facebook),
-            loadImage(assets.linkedin),
-            loadImage(assets.instagram)
-          ]).then(function (images) {
-          var data = {
-            name: fields.name.value,
-            role: fields.role.value,
-            email: fields.email.value,
-            phone: fields.phone.value
-          };
-          var nameParts = splitName(data.name);
-          var lineWidth = nameLineWidth(data.name);
-          var canvas = document.createElement("canvas");
-          var ctx = canvas.getContext("2d");
-          canvas.width = 800;
-          canvas.height = 400;
+          renderSignature();
 
-          ctx.fillStyle = "#ffffff";
-          ctx.fillRect(0, 0, 800, 400);
+          var printWin = openSignaturePrintWindow();
+          if (!printWin) {
+            statusBox.textContent = "Permita pop-ups para baixar a imagem.";
+            return;
+          }
 
-          ctx.drawImage(images[0], 38, 80, 240, 97);
+          statusBox.textContent = "Gerando imagem (print)...";
 
-          var lateralX = 322;
-          ctx.strokeStyle = "#9ca4c7";
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(lateralX, 51);
-          ctx.lineTo(369, 51);
-          ctx.moveTo(lateralX, 51);
-          ctx.lineTo(lateralX, 194);
-          ctx.moveTo(lateralX, 194);
-          ctx.lineTo(369, 194);
-          ctx.stroke();
-
-          ctx.fillStyle = "#000078";
-          ctx.beginPath();
-          ctx.arc(lateralX, 194, 4, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.drawImage(images[1], 353, 58, 106, 106);
-          ctx.drawImage(images[5], 370, 164, 72, 18);
-          ctx.drawImage(images[2], 370, 182, 72, 72);
-
-          var nameX = 510;
-          drawText(ctx, nameParts.first + " ", nameX, 58, { font: "bold 27px Arial", color: "#000078" });
-          var firstWidth = ctx.measureText(nameParts.first + " ").width;
-          drawText(ctx, nameParts.rest, nameX + firstWidth, 58, { font: "27px Arial", color: "#000078" });
-          ctx.font = "bold 27px Arial";
-          lineWidth = Math.max(28, Math.min(90, Math.round(ctx.measureText(firstGivenName(data.name)).width / 2)));
-          ctx.fillStyle = "#000078";
-          ctx.fillRect(510, 90, lineWidth, 3);
-          drawText(ctx, data.role, 510, 101, { font: "17px Arial", color: "#0b226f" });
-
-          drawText(ctx, "✉", 510, 139, { font: "23px Arial", color: "#000078" });
-          drawText(ctx, data.email, 545, 143, { font: "14px Arial", color: "#0b226f" });
-          drawText(ctx, "☎", 510, 170, { font: "23px Arial", color: "#000078" });
-          drawText(ctx, data.phone, 545, 174, { font: "14px Arial", color: "#0b226f" });
-          ctx.drawImage(images[6], 510, 198, 24, 24);
-          drawText(ctx, "infocraftweb.com.br/site/", 545, 205, { font: "14px Arial", color: "#0b226f" });
-
-          ctx.fillStyle = "#000078";
-          ctx.fillRect(0, 290, 430, 110);
-          ctx.fillStyle = "#eef2ff";
-          ctx.fillRect(430, 290, 370, 110);
-
-          ctx.strokeStyle = "#40a7ff";
-          ctx.lineWidth = 2;
-          ctx.strokeRect(24, 316, 58, 58);
-          ctx.drawImage(images[3], 24, 316, 58, 58);
-          drawText(ctx, "Soluções completas para", 98, 331, { font: "17px Arial", color: "#ffffff" });
-          drawText(ctx, "municípios e educação.", 98, 349, { font: "17px Arial", color: "#ffffff" });
-          ctx.drawImage(images[4], 323, 293, 82, 104);
-
-          drawText(ctx, "Nos siga nas redes sociais", 615, 314, { font: "italic 18px Arial", color: "#000078", align: "center" });
-          ctx.drawImage(images[7], 522, 344, 44, 44);
-          ctx.drawImage(images[8], 593, 344, 44, 44);
-          ctx.drawImage(images[9], 664, 344, 44, 44);
-
-          var link = document.createElement("a");
-          link.href = canvas.toDataURL("image/png");
-          link.download = "assinatura-infocraft.png";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          statusBox.textContent = "Imagem da assinatura baixada.";
-          }).catch(function () {
-            statusBox.textContent = "Nao foi possivel gerar a imagem. Verifique se os assets estao carregando.";
-          });
+          preparePrintWindow(printWin)
+            .then(function (target) {
+              return capturePreviewBlob(target);
+            })
+            .then(function (blob) {
+              var url = URL.createObjectURL(blob);
+              var link = document.createElement("a");
+              link.href = url;
+              link.download = "assinatura-infocraft.png";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              statusBox.textContent = "Imagem da assinatura baixada.";
+            })
+            .catch(function () {
+              statusBox.textContent = "Nao foi possivel gerar a imagem. Confira a previa e tente novamente.";
+            })
+            .finally(function () {
+              if (printWin && !printWin.closed) {
+                printWin.close();
+              }
+            });
         });
       });
     }
@@ -520,16 +582,6 @@
 
     document.getElementById("copyButton").addEventListener("click", copySignatureHtml);
     document.getElementById("downloadButton").addEventListener("click", downloadSignatureImage);
-    document.getElementById("resetButton").addEventListener("click", function () {
-      fields.photo.value = "";
-      fields.qr.value = "";
-      uploadedPhotoDataUrl = "";
-      uploadedQrDataUrl = "";
-      statusBox.textContent = "Imagens removidas da previa.";
-      updateAvatar(function () {
-        updateQr(renderSignature);
-      });
-    });
 
     updateAvatar(function () {
       updateQr(renderSignature);
