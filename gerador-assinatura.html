@@ -4,179 +4,72 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gerador de Assinatura Infocraft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     body {
       margin: 0;
-      background: #f5f7fb;
       color: #121826;
       font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .page {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 32px 20px;
-    }
-
-    h1 {
-      margin: 0 0 22px;
-      color: #000078;
-      font-size: 28px;
-      line-height: 34px;
-    }
-
-    .layout {
-      display: table;
-      width: 100%;
-      border-spacing: 24px 0;
-    }
-
-    .panel {
-      display: table-cell;
-      vertical-align: top;
-      background: #ffffff;
-      border: 1px solid #d9deea;
-      border-radius: 8px;
-      padding: 22px;
-    }
-
-    .form-panel {
-      width: 330px;
-    }
-
-    label {
-      display: block;
-      margin: 0 0 7px;
-      color: #26304a;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    input {
-      box-sizing: border-box;
-      width: 100%;
-      height: 40px;
-      margin: 0 0 15px;
-      padding: 8px 10px;
-      border: 1px solid #bfc7d8;
-      border-radius: 6px;
-      color: #121826;
-      font-size: 14px;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    input[type="file"] {
-      height: auto;
-      padding: 9px;
-      background: #f9fbff;
-    }
-
-    button {
-      height: 42px;
-      border: 0;
-      border-radius: 6px;
-      background: #000078;
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .actions {
-      display: table;
-      width: 100%;
-      border-spacing: 10px 0;
-      margin-top: 4px;
-    }
-
-    .actions button {
-      display: table-cell;
-      width: 50%;
-    }
-
-    .secondary {
-      background: #26304a;
-    }
-
-    .preview-title {
-      margin: 0 0 14px;
-      color: #26304a;
-      font-size: 14px;
-      font-weight: bold;
     }
 
     .preview-frame {
       overflow-x: auto;
-      padding: 12px;
-      border: 1px solid #e2e7f1;
       background: #ffffff;
-    }
-
-    .hint {
-      margin: 14px 0 0;
-      color: #5f6b84;
-      font-size: 12px;
-      line-height: 17px;
-    }
-
-    .status {
-      min-height: 18px;
-      margin: 12px 0 0;
-      color: #006a43;
-      font-size: 13px;
-      line-height: 18px;
-    }
-
-    @media (max-width: 900px) {
-      .layout,
-      .panel {
-        display: block;
-      }
-
-      .form-panel {
-        width: auto;
-        margin-bottom: 20px;
-      }
     }
   </style>
 </head>
-<body>
-  <div class="page">
-    <h1>Gerador de Assinatura Infocraft</h1>
+<body class="min-h-screen bg-slate-100">
+  <div class="mx-auto max-w-7xl px-5 py-8">
+    <div class="mb-6 flex flex-col gap-2 border-b border-slate-200 pb-5">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-sky-600">Infocraft</p>
+      <h1 class="text-3xl font-bold text-[#000078]">Gerador de assinatura</h1>
+      <p class="max-w-2xl text-sm leading-6 text-slate-600">Preencha os dados, envie a foto e o QR code, confira a previa e escolha entre copiar o HTML compatível com e-mail ou baixar como PNG.</p>
+    </div>
 
-    <div class="layout">
-      <div class="panel form-panel">
-        <label for="photoInput">Foto</label>
-        <input id="photoInput" type="file" accept="image/*">
-
-        <label for="qrInput">QR code</label>
-        <input id="qrInput" type="file" accept="image/*">
-
-        <label for="nameInput">Nome</label>
-        <input id="nameInput" type="text" value="Andre Luiz Queiroz">
-
-        <label for="roleInput">Cargo</label>
-        <input id="roleInput" type="text" value="Analista de Licitacoes">
-
-        <label for="emailInput">E-mail</label>
-        <input id="emailInput" type="email" value="andre@infocraft.com.br">
-
-        <label for="phoneInput">Telefone</label>
-        <input id="phoneInput" type="text" value="71 3254-4200">
-
-        <div class="actions">
-          <button id="downloadButton" type="button">Baixar imagem</button>
-          <button id="resetButton" class="secondary" type="button">Limpar imagens</button>
+    <div class="grid gap-6 lg:grid-cols-[380px_1fr]">
+      <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="mb-5">
+          <h2 class="text-base font-bold text-slate-900">Dados da assinatura</h2>
+          <p class="mt-1 text-sm text-slate-500">A imagem final acompanha a previa ao lado.</p>
         </div>
 
-        <div id="status" class="status" aria-live="polite"></div>
+        <label class="mb-1.5 block text-sm font-bold text-slate-700" for="photoInput">Foto</label>
+        <input class="mb-4 block w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-[#000078] file:px-3 file:py-1.5 file:text-sm file:font-bold file:text-white" id="photoInput" type="file" accept="image/*">
+
+        <label class="mb-1.5 block text-sm font-bold text-slate-700" for="qrInput">QR code</label>
+        <input class="mb-4 block w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-[#000078] file:px-3 file:py-1.5 file:text-sm file:font-bold file:text-white" id="qrInput" type="file" accept="image/*">
+
+        <label class="mb-1.5 block text-sm font-bold text-slate-700" for="nameInput">Nome</label>
+        <input class="mb-4 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="nameInput" type="text" value="Andre Luiz Queiroz">
+
+        <label class="mb-1.5 block text-sm font-bold text-slate-700" for="roleInput">Cargo</label>
+        <input class="mb-4 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="roleInput" type="text" value="Analista de Licitacoes">
+
+        <label class="mb-1.5 block text-sm font-bold text-slate-700" for="emailInput">E-mail</label>
+        <input class="mb-4 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="emailInput" type="email" value="andre@infocraft.com.br">
+
+        <label class="mb-1.5 block text-sm font-bold text-slate-700" for="phoneInput">Telefone</label>
+        <input class="mb-5 h-10 w-full rounded-md border border-slate-300 px-3 text-sm text-slate-900 outline-none focus:border-[#000078] focus:ring-2 focus:ring-[#000078]/15" id="phoneInput" type="text" value="71 3254-4200">
+
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <button class="h-11 rounded-md bg-[#000078] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#0505a8] focus:outline-none focus:ring-2 focus:ring-[#000078]/25" id="copyButton" type="button"><i class="fa-solid fa-code mr-2"></i>Copiar HTML/CSS</button>
+          <button class="h-11 rounded-md bg-[#000078] px-4 text-sm font-bold text-white shadow-sm hover:bg-[#0505a8] focus:outline-none focus:ring-2 focus:ring-[#000078]/25" id="downloadButton" type="button"><i class="fa-solid fa-download mr-2"></i>Baixar imagem</button>
+          <button class="h-11 rounded-md bg-slate-700 px-4 text-sm font-bold text-white shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-500/25" id="resetButton" type="button">Limpar imagens</button>
+        </div>
+
+        <div class="mt-4 min-h-5 text-sm font-medium text-emerald-700" id="status" aria-live="polite"></div>
       </div>
 
-      <div class="panel">
-        <p class="preview-title">Previa da assinatura</p>
-        <div id="signaturePreview" class="preview-frame"></div>
-        <p class="hint">Como inserir: preencha os dados, confira a previa, clique em Baixar imagem e insira o PNG no editor de assinatura do seu e-mail. No Outlook, Gmail ou webmail, procure por Configuracoes &gt; Assinatura.</p>
+      <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Previa da assinatura</h2>
+            <p class="mt-1 text-sm text-slate-500">A previa abaixo tambem e o HTML que sera copiado para o e-mail.</p>
+          </div>
+        </div>
+        <div id="signaturePreview" class="preview-frame rounded-md border border-slate-200 bg-white p-3"></div>
+        <p class="mt-4 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-sm leading-5 text-slate-600">Como inserir: use Copiar HTML/CSS para manter os links clicaveis no e-mail. Se o seu cliente nao aceitar HTML, use Baixar imagem e insira o PNG no editor de assinatura.</p>
       </div>
     </div>
   </div>
@@ -396,7 +289,7 @@
         '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="260" style="width:260px; border-collapse:collapse;">' +
         '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:23px; font-family:Arial, Helvetica, sans-serif;">&#9993;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="mailto:' + escapeHtml(data.email) + '" style="color:#0b226f; text-decoration:none;">' + escapeHtml(data.email) + '</a></td></tr>' +
         '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:23px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#9742;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="' + telHref + '" style="color:#0b226f; text-decoration:none;">' + escapeHtml(data.phone) + '</a></td></tr>' +
-        '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:22px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#9679;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="https://www.infocraft.com.br" style="color:#0b226f; text-decoration:none;">www.infocraft.com.br</a></td></tr>' +
+        '<tr><td width="28" valign="middle" style="width:28px; color:#000078; font-size:19px; line-height:27px; font-family:Arial, Helvetica, sans-serif;">&#127760;</td><td valign="middle" style="font-family:Arial, Helvetica, sans-serif; color:#0b226f; font-size:14px; line-height:20px;"><a href="https://www.infocraft.com.br" style="color:#0b226f; text-decoration:none;">www.infocraft.com.br</a></td></tr>' +
         '</table></td></tr></table></td><td width="40" style="width:40px; font-size:0; line-height:0;">&nbsp;</td>' +
         '</tr></table></td></tr>' +
         '<tr><td width="800" height="110" valign="top" style="width:800px; height:110px; padding:0; margin:0;">' +
@@ -414,12 +307,70 @@
       preview.innerHTML = buildSignatureHtml();
     }
 
+    function copySignatureHtml() {
+      var html = buildSignatureHtml();
+
+      if (navigator.clipboard && window.ClipboardItem) {
+        var item = new ClipboardItem({
+          "text/html": new Blob([html], { type: "text/html" }),
+          "text/plain": new Blob([html], { type: "text/plain" })
+        });
+
+        navigator.clipboard.write([item]).then(function () {
+          statusBox.textContent = "HTML/CSS da assinatura copiado.";
+        }).catch(function () {
+          fallbackCopySignature(html);
+        });
+        return;
+      }
+
+      fallbackCopySignature(html);
+    }
+
+    function fallbackCopySignature(html) {
+      var area = document.createElement("textarea");
+      area.value = html;
+      area.style.position = "fixed";
+      area.style.left = "-9999px";
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+      document.execCommand("copy");
+      document.body.removeChild(area);
+      statusBox.textContent = "HTML/CSS da assinatura copiado.";
+    }
+
     function drawText(ctx, text, x, y, options) {
       ctx.fillStyle = options.color || "#000078";
       ctx.font = options.font;
       ctx.textAlign = options.align || "left";
       ctx.textBaseline = options.baseline || "top";
       ctx.fillText(text, x, y);
+    }
+
+    function drawGlobeIcon(ctx, x, y, size, color) {
+      var radius = size / 2;
+      var centerX = x + radius;
+      var centerY = y + radius;
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius - 1, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, radius * 0.45, radius - 1, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(x + 3, centerY);
+      ctx.lineTo(x + size - 3, centerY);
+      ctx.moveTo(centerX, y + 2);
+      ctx.lineTo(centerX, y + size - 2);
+      ctx.stroke();
+      ctx.restore();
     }
 
     function downloadSignatureImage() {
@@ -483,7 +434,7 @@
           drawText(ctx, data.email, 545, 143, { font: "14px Arial", color: "#0b226f" });
           drawText(ctx, "☎", 510, 170, { font: "23px Arial", color: "#000078" });
           drawText(ctx, data.phone, 545, 174, { font: "14px Arial", color: "#0b226f" });
-          drawText(ctx, "●", 513, 202, { font: "22px Arial", color: "#000078" });
+          drawGlobeIcon(ctx, 511, 201, 20, "#000078");
           drawText(ctx, "www.infocraft.com.br", 545, 205, { font: "14px Arial", color: "#0b226f" });
 
           ctx.fillStyle = "#000078";
@@ -557,6 +508,7 @@
     fields.email.addEventListener("input", renderSignature);
     fields.phone.addEventListener("input", renderSignature);
 
+    document.getElementById("copyButton").addEventListener("click", copySignatureHtml);
     document.getElementById("downloadButton").addEventListener("click", downloadSignatureImage);
     document.getElementById("resetButton").addEventListener("click", function () {
       fields.photo.value = "";
