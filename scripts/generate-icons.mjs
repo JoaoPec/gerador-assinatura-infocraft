@@ -4,8 +4,6 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 const BLUE = "#000078";
-const SOCIAL_BG = "#eef2ff";
-const SOCIAL_BORDER = "#c5cee8";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const assetsDir = join(root, "assets");
 
@@ -42,15 +40,21 @@ function drawSocialIcon(draw) {
   const size = 44;
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext("2d");
+  const cx = size / 2;
+  const cy = size / 2;
+  const radius = size / 2 - 1;
+
   ctx.clearRect(0, 0, size, size);
 
-  roundRect(ctx, 0, 0, size, size, 9);
-  ctx.fillStyle = SOCIAL_BG;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius - 2, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffffff";
   ctx.fill();
 
-  roundRect(ctx, 0.5, 0.5, size - 1, size - 1, 9);
-  ctx.strokeStyle = SOCIAL_BORDER;
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = BLUE;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius - 1.5, 0, Math.PI * 2);
   ctx.stroke();
 
   draw(ctx, size);
@@ -77,24 +81,19 @@ save(
 save(
   "icon-phone.png",
   drawContactIcon((ctx) => {
-    ctx.strokeStyle = BLUE;
     ctx.fillStyle = BLUE;
-    ctx.lineWidth = 1.7;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
 
-    roundRect(ctx, 7, 2.5, 10, 19, 2.8);
-    ctx.stroke();
-
-    roundRect(ctx, 8.5, 5, 7, 12.5, 1.2);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(12, 4.2, 0.7, 0, Math.PI * 2);
+    roundRect(ctx, 7, 2, 10, 20, 2.5);
     ctx.fill();
 
-    roundRect(ctx, 10.5, 17.2, 3, 1.2, 0.6);
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillStyle = "#000000";
+    roundRect(ctx, 8.5, 4.5, 7, 13.5, 1.5);
     ctx.fill();
+    roundRect(ctx, 10.5, 17.5, 3, 1, 0.5);
+    ctx.fill();
+
+    ctx.globalCompositeOperation = "source-over";
   })
 );
 
@@ -131,7 +130,7 @@ save(
   "social-facebook.png",
   drawSocialIcon((ctx, size) => {
     ctx.fillStyle = BLUE;
-    ctx.font = "bold 26px Arial";
+    ctx.font = "bold 24px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("f", size / 2 + 1, size / 2 + 2);
@@ -142,7 +141,7 @@ save(
   "social-linkedin.png",
   drawSocialIcon((ctx, size) => {
     ctx.fillStyle = BLUE;
-    ctx.font = "bold 16px Arial";
+    ctx.font = "bold 15px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("in", size / 2, size / 2 + 1);
@@ -154,14 +153,14 @@ save(
   drawSocialIcon((ctx, size) => {
     ctx.strokeStyle = BLUE;
     ctx.fillStyle = BLUE;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.9;
     ctx.lineJoin = "round";
-    ctx.strokeRect(13, 13, 18, 18);
+    ctx.strokeRect(14, 14, 16, 16);
     ctx.beginPath();
-    ctx.arc(size / 2, size / 2, 5, 0, Math.PI * 2);
+    ctx.arc(size / 2, size / 2, 4.5, 0, Math.PI * 2);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(28, 16, 2, 0, Math.PI * 2);
+    ctx.arc(27, 17, 1.8, 0, Math.PI * 2);
     ctx.fill();
   })
 );
