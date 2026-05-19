@@ -4,6 +4,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 const BLUE = "#000078";
+const WHITE = "#ffffff";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const assetsDir = join(root, "assets");
 
@@ -27,6 +28,18 @@ function roundRect(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
+function drawBlueCircle(ctx, size) {
+  const cx = size / 2;
+  const cy = size / 2;
+  const radius = size / 2;
+
+  ctx.clearRect(0, 0, size, size);
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fillStyle = BLUE;
+  ctx.fill();
+}
+
 function drawContactIcon(draw) {
   const size = 24;
   const canvas = createCanvas(size, size);
@@ -40,16 +53,7 @@ function drawContactIconBadge(draw) {
   const size = 24;
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext("2d");
-  const cx = size / 2;
-  const cy = size / 2;
-
-  ctx.clearRect(0, 0, size, size);
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
-  ctx.fillStyle = BLUE;
-  ctx.fill();
-
+  drawBlueCircle(ctx, size);
   draw(ctx, size);
   return canvas;
 }
@@ -58,17 +62,7 @@ function drawSocialIcon(draw) {
   const size = 44;
   const canvas = createCanvas(size, size);
   const ctx = canvas.getContext("2d");
-  const cx = size / 2;
-  const cy = size / 2;
-  const radius = size / 2;
-
-  ctx.clearRect(0, 0, size, size);
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-  ctx.fillStyle = BLUE;
-  ctx.fill();
-
+  drawBlueCircle(ctx, size);
   draw(ctx, size);
   return canvas;
 }
@@ -93,23 +87,22 @@ save(
 save(
   "icon-phone.png",
   drawContactIconBadge((ctx) => {
-    ctx.strokeStyle = "#ffffff";
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = WHITE;
+    ctx.strokeStyle = WHITE;
     ctx.lineWidth = 1.5;
     ctx.lineCap = "round";
-    ctx.lineJoin = "round";
 
-    roundRect(ctx, 8, 5, 8, 14, 1.6);
+    roundRect(ctx, 9, 4.5, 6, 15, 1.3);
     ctx.stroke();
 
-    roundRect(ctx, 9.2, 6.8, 5.6, 9, 0.8);
+    roundRect(ctx, 10, 6.5, 4, 10, 0.5);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.arc(12, 6.3, 0.45, 0, Math.PI * 2);
+    ctx.arc(12, 5.8, 0.4, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillRect(10.8, 16.8, 2.4, 0.7);
+    ctx.fillRect(10.8, 16.5, 2.4, 0.6);
   })
 );
 
@@ -145,19 +138,19 @@ save(
 save(
   "social-facebook.png",
   drawSocialIcon((ctx, size) => {
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 24px Arial";
+    ctx.fillStyle = WHITE;
+    ctx.font = "bold 28px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("f", size / 2 + 1, size / 2 + 2);
+    ctx.fillText("f", size / 2, size / 2 + 2);
   })
 );
 
 save(
   "social-linkedin.png",
   drawSocialIcon((ctx, size) => {
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 15px Arial";
+    ctx.fillStyle = WHITE;
+    ctx.font = "bold 17px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("in", size / 2, size / 2 + 1);
@@ -167,18 +160,22 @@ save(
 save(
   "social-instagram.png",
   drawSocialIcon((ctx, size) => {
-    ctx.strokeStyle = "#ffffff";
-    ctx.fillStyle = "#ffffff";
-    ctx.lineWidth = 1.9;
+    ctx.strokeStyle = WHITE;
+    ctx.fillStyle = WHITE;
+    ctx.lineWidth = 2;
     ctx.lineJoin = "round";
-    ctx.strokeRect(14, 14, 16, 16);
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, 4.5, 0, Math.PI * 2);
+
+    roundRect(ctx, 12, 12, 20, 20, 5);
     ctx.stroke();
+
     ctx.beginPath();
-    ctx.arc(27, 17, 1.8, 0, Math.PI * 2);
+    ctx.arc(size / 2, size / 2, 5, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(29, 15, 2, 0, Math.PI * 2);
     ctx.fill();
   })
 );
 
-console.log("Icons generated in assets/ (cor " + BLUE + ")");
+console.log("Icons: bola azul + simbolo branco");
