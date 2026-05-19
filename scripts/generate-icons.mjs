@@ -79,28 +79,22 @@ save(
   drawContactIcon((ctx) => {
     ctx.strokeStyle = BLUE;
     ctx.fillStyle = BLUE;
-    ctx.lineWidth = 1.7;
+    ctx.lineWidth = 1.85;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
-    ctx.fillRect(5, 17.5, 14, 2.5);
+    ctx.beginPath();
+    ctx.arc(7, 17, 2.6, 0, Math.PI * 2);
+    ctx.fill();
 
     ctx.beginPath();
-    ctx.moveTo(12, 15.5);
-    ctx.lineTo(12, 17.5);
-    ctx.stroke();
+    ctx.arc(17, 7, 2.6, 0, Math.PI * 2);
+    ctx.fill();
 
+    ctx.lineWidth = 2.2;
     ctx.beginPath();
-    ctx.arc(7.5, 10.5, 3.2, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(16.5, 10.5, 3.2, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(10.2, 10.5);
-    ctx.lineTo(13.8, 10.5);
+    ctx.moveTo(8.8, 15.2);
+    ctx.bezierCurveTo(10.5, 11.5, 13.5, 9, 15.2, 9.8);
     ctx.stroke();
   })
 );
