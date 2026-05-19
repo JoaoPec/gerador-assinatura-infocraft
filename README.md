@@ -19,3 +19,14 @@ Tire um **print** só da área branca da prévia (a assinatura completa):
 Cole a imagem no editor de assinatura.
 
 O projeto usa apenas HTML, CSS e JavaScript puro.
+
+### Icones na assinatura
+
+E-mail e clientes de correio **nao carregam** bibliotecas de icones (Font Awesome, etc.). Por isso a assinatura usa **imagens PNG** embutidas (`assets/icon-email.png`, `assets/icon-phone.png`, redes sociais).
+
+Para regenerar os icones apos alterar o estilo:
+
+```bash
+npm install canvas
+node scripts/generate-icons.mjs
+```
